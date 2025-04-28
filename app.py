@@ -12,7 +12,7 @@ def save_company_profile(uploaded_file):
 
 st.set_page_config(page_title="Tender Tracker AI", layout="wide")
 
-st.title("📑 Government Tender Tracker & AI Bid Match Recommender")
+st.title("📑Tender Tracker & AI Bid Match Recommender")
 
 st.sidebar.header("Upload Company Profile")
 uploaded_profile = st.sidebar.file_uploader("Upload your company profile (.txt)", type=["txt"])
