@@ -2,7 +2,7 @@ import streamlit as st
 import json
 from matcher.ai_matcher import match_tenders
 import base64
-st.set_page_config(page_title="Tender Recommendation", page_icon="📝")
+st.set_page_config(page_title="Tender Tracker AI", layout="wide", page_icon="📝")
 def set_background(image_file):
     with open(image_file, "rb") as image:
         encoded = base64.b64encode(image.read()).decode()
@@ -28,8 +28,6 @@ def load_tenders(filepath):
 def save_company_profile(uploaded_file):
     with open('data/company_profile.txt', 'wb') as f:
         f.write(uploaded_file.read())
-
-st.set_page_config(page_title="Tender Tracker AI", layout="wide")
 
 st.title("📑Tender Tracker & AI Bid Match Recommender")
 
