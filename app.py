@@ -1,29 +1,45 @@
-# app.py
 import streamlit as st
 import json
-import os
+from matcher.ai_matcher import match_tenders
 
-st.set_page_config(page_title="Tender Tracker", layout="wide")
+def load_tenders(filepath):
+    with open(filepath, 'r') as f:
+        return json.load(f)
 
-st.title("📄 Government Tender Tracker & Recommender")
+def save_company_profile(uploaded_file):
+    with open('data/company_profile.txt', 'wb') as f:
+        f.write(uploaded_file.read())
 
-# Sidebar
+st.set_page_config(page_title="Tender Tracker AI", layout="wide")
+
+st.title("📑 Government Tender Tracker & AI Bid Match Recommender")
+
 st.sidebar.header("Upload Company Profile")
-uploaded_profile = st.sidebar.file_uploader("Choose a company profile (PDF/TXT)", type=["pdf", "txt"])
+uploaded_profile = st.sidebar.file_uploader("Upload your company profile (.txt)", type=["txt"])
 
-# Main Area
-st.header("Aggregated Tenders")
+threshold = st.sidebar.slider("Matching Threshold", 0.3, 0.9, 0.5)
 
-# Load tenders
-if os.path.exists("data/tenders.json"):
-    with open("data/tenders.json", "r") as f:
-        tenders = json.load(f)
-    for tender in tenders:
-        st.subheader(tender['title'])
-        st.write(f"**Deadline:** {tender['deadline']}")
-        st.write(f"**EMD Amount:** {tender['emd']}")
-        st.write(f"**Scope of Work:** {tender['scope']}")
-        st.divider()
-else:
-    st.info("No tenders found. Please run the scrapers.")
+if uploaded_profile:
+    save_company_profile(uploaded_profile)
+    st.sidebar.success("✅ Profile uploaded successfully!")
 
+tenders = load_tenders('data/tenders.json')
+
+if uploaded_profile:
+    matches, all_tenders = match_tenders('data/company_profile.txt', 'data/tenders.json', threshold=threshold)
+    st.subheader(f"🎯 Tenders Matched to Your Profile (Threshold {threshold})")
+    if matches:
+        for tender in matches:
+            with st.expander(f"🔎 {tender['title']} (Score: {tender['match_score']})"):
+                st.write(f"**Scope:** {tender.get('scope', 'No scope available.')}")
+                st.write(f"**Deadline:** {tender.get('deadline', 'N/A')}")
+                st.write(f"**EMD:** {tender.get('emd', 'N/A')}")
+    else:
+        st.warning("😢 No tenders matched your profile based on the current threshold. Try lowering it.")
+
+st.subheader("📋 All Available Tenders")
+for tender in tenders:
+    with st.expander(f"📝 {tender['title']}"):
+        st.write(f"**Scope:** {tender.get('scope', 'No scope available.')}")
+        st.write(f"**Deadline:** {tender.get('deadline', 'N/A')}")
+        st.write(f"**EMD:** {tender.get('emd', 'N/A')}")
