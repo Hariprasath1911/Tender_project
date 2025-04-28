@@ -2,7 +2,7 @@ import streamlit as st
 import json
 from matcher.ai_matcher import match_tenders
 import base64
-st.set_page_config(page_title="Amazon Prime Chatbot", page_icon="🎬")
+st.set_page_config(page_title="Tender Recommendation", page_icon="📝")
 def set_background(image_file):
     with open(image_file, "rb") as image:
         encoded = base64.b64encode(image.read()).decode()
