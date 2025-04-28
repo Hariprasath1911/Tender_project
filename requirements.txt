@@ -4,4 +4,3 @@ requests
 sentence-transformers
 torch
 pdfplumber
-matcher.ai_matcher
