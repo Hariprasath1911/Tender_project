@@ -1,8 +1,6 @@
 streamlit
-requests
 beautifulsoup4
-pdfplumber
-scikit-learn
+requests
 sentence-transformers
-twilio
-schedule
+torch
+pdfplumber
